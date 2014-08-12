@@ -42,15 +42,22 @@ class Options(BaseOptions):
 def makeService(config):
     s = MultiService()
 
+
+    # ZipkinTracer(
+    #     scribe_client,
+    #     category=None,
+    #     end_annotations=None,
+    #     max_traces=50,
+    #     max_idle_time=10,
+    #     _reactor=None)
     push_tracer(
         ZipkinTracer(
-            ScribeClient(
-                clientFromString(reactor, config['scribe']))))
+            ScribeClient(clientFromString(reactor, config['scribe'])), 'zipkin', None, 10, 10, None))
 
     root = RootResource()
 
-    if config['rproxy']:
-        root = RProxyWrapper(root)
+    # if config['rproxy']:
+    #     root = RProxyWrapper(root)
 
     site = server.Site(root)
     site.displayTracebacks = False
